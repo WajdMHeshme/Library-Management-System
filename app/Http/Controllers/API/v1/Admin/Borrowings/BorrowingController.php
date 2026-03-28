@@ -2,14 +2,24 @@
 
 
 
-namespace App\Http\Controllers\API\v1\Admin\Borrowing;
+namespace App\Http\Controllers\API\v1\Admin\Borrowings;
 
 use App\Http\Controllers\Controller;
 use App\Services\BorrowingService;
+use Illuminate\Http\Request;
 
 class BorrowingController extends Controller
 {
     public function __construct(protected BorrowingService $service) {}
+
+
+
+    public function index(Request $request)
+    {
+        return response()->json([
+            'data' => $this->service->getAll($request->status)
+        ]);
+    }
 
     public function pending()
     {

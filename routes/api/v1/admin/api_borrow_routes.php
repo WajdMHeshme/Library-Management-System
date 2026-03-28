@@ -1,11 +1,16 @@
 <?php
 
-use App\Http\Controllers\API\v1\Admin\Borrowing\BorrowingController;
+use App\Http\Controllers\API\v1\Admin\Borrowings\BorrowingController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('borrowings')->group(function () {
-    Route::get('/pending', [BorrowingController::class, 'pending']);
-    Route::put('{id}/approve', [BorrowingController::class, 'approve']);
-    Route::put('{id}/reject', [BorrowingController::class, 'reject']);
-    Route::put('{id}/return', [BorrowingController::class, 'returnBook']);
-});
+Route::middleware(['auth:sanctum', 'admin'])
+    ->prefix('borrowings')
+    ->group(function () {
+
+
+        Route::get('/', [BorrowingController::class, 'index']);
+        Route::get('/pending', [BorrowingController::class, 'pending']);
+        Route::patch('{id}/approve', [BorrowingController::class, 'approve']);
+        Route::patch('{id}/reject', [BorrowingController::class, 'reject']);
+        Route::patch('{id}/return', [BorrowingController::class, 'returnBook']);
+    });

@@ -1,10 +1,11 @@
 <?php
 
-
 namespace App\Services;
 
+use App\Enums\BorrowingStatus;
+use App\Exceptions\ApiException;
 use App\Repositories\Contracts\BorrowingRepositoryInterface;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class BorrowingService
 {
@@ -12,37 +13,69 @@ class BorrowingService
         protected BorrowingRepositoryInterface $repository
     ) {}
 
-    public function requestBorrow(int $userId, int $bookId)
+    public function getAll(?string $status = null)
     {
-        return $this->repository->create([
-            'user_id' => $userId,
-            'book_id' => $bookId,
-            'status'  => 'pending',
-        ]);
+        if ($status) {
+            return $this->repository->getByStatus($status);
+        }
+
+        return $this->repository->getAll();
     }
 
     public function approve(int $id)
     {
-        return $this->repository->updateStatus($id, [
-            'status' => 'approved',
-            'borrowed_at' => now(),
-            'due_date' => Carbon::now()->addDays(7),
-        ]);
+        return DB::transaction(function () use ($id) {
+
+            $borrowing = $this->repository->findById($id);
+
+            if ($borrowing->status !== BorrowingStatus::PENDING->value) {
+                throw new ApiException('Borrowing already processed');
+            }
+
+            if (!$borrowing->book || $borrowing->book->stock <= 0) {
+                throw new ApiException('Book not available');
+            }
+
+            $borrowing->book->decrement('stock');
+
+            return $this->repository->updateStatus($id, [
+                'status' => BorrowingStatus::APPROVED->value,
+                'borrowed_at' => now(),
+                'due_date' => now()->addDays(7),
+            ]);
+        });
     }
 
     public function reject(int $id)
     {
+        $borrowing = $this->repository->findById($id);
+
+        if ($borrowing->status !== BorrowingStatus::PENDING->value) {
+            throw new ApiException('Cannot reject this borrowing');
+        }
+
         return $this->repository->updateStatus($id, [
-            'status' => 'rejected',
+            'status' => BorrowingStatus::REJECTED->value,
         ]);
     }
 
     public function returnBook(int $id)
     {
-        return $this->repository->updateStatus($id, [
-            'status' => 'returned',
-            'returned_at' => now(),
-        ]);
+        return DB::transaction(function () use ($id) {
+
+            $borrowing = $this->repository->findById($id);
+
+            if ($borrowing->status !== BorrowingStatus::APPROVED->value) {
+                throw new ApiException('Cannot return this book');
+            }
+
+            $borrowing->book->increment('stock');
+
+            return $this->repository->updateStatus($id, [
+                'status' => BorrowingStatus::RETURNED->value,
+                'returned_at' => now(),
+            ]);
+        });
     }
 
     public function getPending()
@@ -53,5 +86,24 @@ class BorrowingService
     public function getUserBorrowings(int $userId)
     {
         return $this->repository->getUserBorrowings($userId);
+    }
+
+    public function requestBorrow(int $userId, int $bookId)
+    {
+
+        $borrowing = $this->repository->getUserBorrowings($userId)
+            ->where('book_id', $bookId)
+            ->whereIn('status', ['pending', 'approved'])
+            ->first();
+
+        if ($borrowing) {
+            throw new \App\Exceptions\ApiException('You already requested this book');
+        }
+
+        return $this->repository->create([
+            'user_id' => $userId,
+            'book_id' => $bookId,
+            'status'  => \App\Enums\BorrowingStatus::PENDING->value,
+        ]);
     }
 }
