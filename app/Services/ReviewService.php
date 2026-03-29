@@ -42,8 +42,8 @@ class ReviewService
 
     public function delete(int $id)
     {
-        return $this->reviewRepository->delete($id);
-                return response()->json([
+        $this->reviewRepository->delete($id);
+        return response()->json([
             'message' => 'Review deleted'
         ]);
     }
