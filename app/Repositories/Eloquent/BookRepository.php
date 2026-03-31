@@ -14,7 +14,13 @@ class BookRepository implements BookRepositoryInterface
 
     public function find(int $id): Book
     {
-        return Book::with('category')->findOrFail($id);
+        return Book::with([
+            'category',
+            'reviews' => function ($q) {
+                $q->where('status', 'approved')->latest();
+            },
+            'reviews.user'
+        ])->findOrFail($id);
     }
 
     public function create(array $data): Book

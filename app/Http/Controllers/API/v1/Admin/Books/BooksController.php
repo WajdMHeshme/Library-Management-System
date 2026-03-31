@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1\Admin\Books;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\v1\Books\StoreBookRequest;
 use App\Http\Requests\API\v1\Books\UpdateBookRequest;
+use App\Http\Resources\BookResource;
 use App\Services\BookService;
 
 class BooksController extends Controller
@@ -34,7 +35,7 @@ class BooksController extends Controller
 
     public function show($id)
     {
-        return response()->json(
+        return new BookResource(
             $this->bookService->getBook($id)
         );
     }
