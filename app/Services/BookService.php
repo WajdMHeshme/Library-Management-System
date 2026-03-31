@@ -65,7 +65,6 @@ class BookService
             $book = $this->bookRepository->create($data);
 
             return $book->load('category');
-
         } catch (\Throwable $e) {
             throw new ApiException("Failed to create book: " . $e->getMessage());
         }
@@ -96,7 +95,6 @@ class BookService
             $book = $this->bookRepository->update($book, $data);
 
             return $book->load('category');
-
         } catch (\Throwable $e) {
             throw new ApiException("Failed to update book: " . $e->getMessage());
         }
@@ -123,6 +121,15 @@ class BookService
             return $this->bookRepository->filterByAvailability($type);
         } catch (\Throwable $e) {
             throw new ApiException("Failed to filter books: " . $e->getMessage());
+        }
+    }
+
+    public function getBooks(array $filters)
+    {
+        try {
+            return $this->bookRepository->getByFilters($filters);
+        } catch (\Throwable $e) {
+            throw new ApiException("Failed to fetch filtered books: " . $e->getMessage());
         }
     }
 }

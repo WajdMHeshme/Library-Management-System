@@ -12,4 +12,5 @@ interface BookRepositoryInterface
     public function update(Book $book, array $data): Book;
     public function delete(Book $book): bool;
     public function filterByAvailability(?string $type = null);
+    public function getByFilters(array $filters);
 }

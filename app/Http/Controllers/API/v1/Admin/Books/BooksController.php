@@ -15,13 +15,16 @@ class BooksController extends Controller
 
     public function index()
     {
-        $availability = request()->query('availability');
+        $filters = request()->only([
+            'category_id',
+            'availability',
+            'search'
+        ]);
 
         return response()->json(
-            $this->bookService->filterBooksByAvailability($availability)
+            $this->bookService->getBooks($filters)
         );
     }
-
     public function store(StoreBookRequest $request)
     {
         $book = $this->bookService->createBook($request->validated());

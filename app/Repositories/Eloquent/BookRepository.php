@@ -33,16 +33,31 @@ class BookRepository implements BookRepositoryInterface
         return $book->delete();
     }
 
-    // دالة الفلترة حسب النوع
+
     public function filterByAvailability(?string $type = null)
     {
         $query = Book::with('category');
 
         if ($type) {
-            // sale, rent, borrow
             $query->where('availability', $type);
         }
 
         return $query->get();
+    }
+
+    public function getByFilters(array $filters)
+    {
+        return Book::with('category')
+            ->when($filters['category_id'] ?? null, function ($q, $categoryId) {
+                $q->where('category_id', $categoryId);
+            })
+            ->when($filters['availability'] ?? null, function ($q, $availability) {
+                $q->where('availability', $availability);
+            })
+            ->when($filters['search'] ?? null, function ($q, $search) {
+                $q->where('title', 'like', "%$search%");
+            })
+            ->latest()
+            ->paginate(10);
     }
 }
