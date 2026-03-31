@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\Book\CreateBookDTO;
 use App\Models\Book;
 use App\Repositories\Contracts\BookRepositoryInterface;
 use Illuminate\Http\UploadedFile;
@@ -49,26 +50,20 @@ class BookService
     /**
      * Create a new book
      */
-    public function createBook(array $data): Book
-    {
-        try {
-            // Handle cover image
-            if (isset($data['cover_image']) && $data['cover_image'] instanceof UploadedFile) {
-                $data['cover_image'] = $data['cover_image']->store('books', 'public');
-            }
+public function createBook(CreateBookDTO $dto): Book
+{
+    try {
+        $imagePath = $dto->storeImage();
 
-            // Ensure category_id and availability are in $data
-            $data['category_id'] = $data['category_id'] ?? null;
-            $data['availability'] = $data['availability'] ?? 'sale'; // default
+        $book = $this->bookRepository->create(
+            $dto->toArray($imagePath)
+        );
 
-            // Create book
-            $book = $this->bookRepository->create($data);
-
-            return $book->load('category');
-        } catch (\Throwable $e) {
-            throw new ApiException("Failed to create book: " . $e->getMessage());
-        }
+        return $book->load('category');
+    } catch (\Throwable $e) {
+        throw new ApiException("Failed to create book: " . $e->getMessage());
     }
+}
 
     /**
      * Update existing book

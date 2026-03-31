@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
-// Auth Routes
-require_once __DIR__ . '/api_auth_routes.php';
+
 
 Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
 

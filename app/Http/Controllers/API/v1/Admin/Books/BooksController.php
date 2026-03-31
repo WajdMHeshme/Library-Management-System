@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1\Admin\Books;
 
+use App\DTOs\Book\CreateBookDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\v1\Books\StoreBookRequest;
 use App\Http\Requests\API\v1\Books\UpdateBookRequest;
@@ -28,9 +29,13 @@ class BooksController extends Controller
     }
     public function store(StoreBookRequest $request)
     {
-        $book = $this->bookService->createBook($request->validated());
+        $dto = CreateBookDTO::fromRequest($request);
 
-        return response()->json($book, 201);
+        $book = $this->bookService->createBook($dto);
+
+        return response()->json([
+            'data' => $book
+        ], 201);
     }
 
     public function show($id)

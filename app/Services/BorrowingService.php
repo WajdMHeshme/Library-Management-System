@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\Borrowing\CreateBorrowingDTO;
 use App\Enums\BorrowingStatus;
 use App\Exceptions\ApiException;
 use App\Repositories\Contracts\BorrowingRepositoryInterface;
@@ -88,22 +89,17 @@ class BorrowingService
         return $this->repository->getUserBorrowings($userId);
     }
 
-    public function requestBorrow(int $userId, int $bookId)
-    {
+public function requestBorrow(CreateBorrowingDTO $dto)
+{
+    $borrowing = $this->repository->getUserBorrowings($dto->userId)
+        ->where('book_id', $dto->bookId)
+        ->whereIn('status', $dto->duplicateStatuses())
+        ->first();
 
-        $borrowing = $this->repository->getUserBorrowings($userId)
-            ->where('book_id', $bookId)
-            ->whereIn('status', ['pending', 'approved'])
-            ->first();
-
-        if ($borrowing) {
-            throw new \App\Exceptions\ApiException('You already requested this book');
-        }
-
-        return $this->repository->create([
-            'user_id' => $userId,
-            'book_id' => $bookId,
-            'status'  => \App\Enums\BorrowingStatus::PENDING->value,
-        ]);
+    if ($borrowing) {
+        throw new ApiException('You already requested this book');
     }
+
+    return $this->repository->create($dto->toArray());
+}
 }
