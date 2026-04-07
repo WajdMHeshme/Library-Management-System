@@ -8,6 +8,7 @@ use App\Repositories\Contracts\BookRepositoryInterface;
 use App\Repositories\Contracts\BorrowingRepositoryInterface;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Contracts\FAQRepositoryInterface;
+use App\Repositories\Contracts\FavoriteRepositoryInterface;
 use App\Repositories\Contracts\ReviewRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\Eloquent\AuthRepository;
@@ -15,6 +16,7 @@ use App\Repositories\Eloquent\BookRepository;
 use App\Repositories\Eloquent\BorrowingRepository;
 use App\Repositories\Eloquent\CategoryRepository;
 use App\Repositories\Eloquent\FAQRepository;
+use App\Repositories\Eloquent\FavoriteRepository;
 use App\Repositories\Eloquent\ReviewRepository;
 use App\Repositories\Eloquent\UserRepository;
 
@@ -59,6 +61,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             ReviewRepositoryInterface::class,
             ReviewRepository::class
+        );
+        $this->app->bind(
+            FavoriteRepositoryInterface::class,
+            FavoriteRepository::class
         );
     }
 
