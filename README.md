@@ -1,59 +1,211 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 E-Library Management System (ELMS)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📌 Overview
 
-## About Laravel
+**E-Library Management System (ELMS)** is a scalable backend system built with Laravel, designed to provide secure and high-performance RESTful APIs for managing digital libraries.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The system follows **Clean Architecture principles**, implementing a clear separation between layers such as Controllers, Services, Repositories, and DTOs — making it highly maintainable and production-ready.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+> ⚠️ **Status:** The project is currently under active development.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🧰 Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```text
+Laravel          – Backend Framework
+PHP 8.x          – Core Language
+MySQL            – Relational Database
+Laravel Sanctum  – API Authentication
+REST API         – Communication Architecture
+Clean Architecture – System Design Pattern
+DTOs + Enums     – Structured Data Handling
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🧱 Architecture Overview
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+This project strictly follows a layered architecture:
 
-### Premium Partners
+```text
+Client Request
+     ↓
+Routes (api/v1)
+     ↓
+Middleware (Auth / Admin)
+     ↓
+Controller
+     ↓
+Service Layer (Business Logic)
+     ↓
+Repository Layer (Data Access)
+     ↓
+Model (Eloquent ORM)
+     ↓
+Database
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Exception → Handler → JSON Error Response
+Resource → API Response Formatting
+```
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📁 Project Structure
 
-## Code of Conduct
+```text
+app/
+ ├── DTOs/                → Data Transfer Objects
+ ├── Enums/               → Enum types (e.g. BorrowingStatus)
+ ├── Exceptions/          → Custom exception handling
+ │
+ ├── Http/
+ │    ├── Controllers/
+ │    │    └── API/v1/
+ │    │         ├── Admin/
+ │    │         ├── Website/
+ │    │         └── Auth/
+ │    │
+ │    ├── Requests/       → Form validation
+ │    └── Resources/      → API response formatting
+ │
+ ├── Models/              → Eloquent models
+ ├── Services/            → Business logic layer
+ │
+ ├── Repositories/
+ │    ├── Contracts/      → Interfaces
+ │    └── Eloquent/       → Implementations
+ │
+ └── Providers/           → Service bindings
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📦 Features
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### ✅ Implemented
 
-## License
+* 🔐 Authentication (Laravel Sanctum)
+* 👤 User management (Admin & Users)
+* 📚 Books management (CRUD)
+* 🏷️ Categories system
+* ❤️ Favorites system
+* ⭐ Reviews system
+* ❓ FAQ module
+* 📦 Clean Architecture implementation
+* 📡 RESTful API with versioning (`v1`)
+* ⚙️ DTOs for structured data transfer
+* 🧩 Repository Pattern (Interface + Implementation)
+* 🛡️ Custom Exception Handling
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+### 🚧 In Progress
+
+* 📖 Borrowing system enhancements
+* ⏳ Book reservation system
+* 🔍 Advanced filtering & search
+* 📊 Admin analytics dashboard
+* 🔔 Notifications system
+
+---
+
+## 🧭 API Modules
+
+### 🔑 Auth
+
+* Register
+* Login
+* Logout
+
+### 📚 Books
+
+* CRUD operations
+* Image upload support
+
+### ❤️ Favorites
+
+* Add / Remove favorite books
+* Get user favorites
+
+### 📖 Borrowings
+
+* Borrow books
+* Track borrowing status
+
+### ⭐ Reviews
+
+* Add reviews to books
+
+### 🏷️ Categories
+
+* Organize books
+
+### ❓ FAQ
+
+* Manage common questions
+
+---
+
+## 🧭 ERD
+
+![ERD Diagram](graph.png)
+
+---
+
+## 🚀 Getting Started
+
+```bash
+git clone https://github.com/your-username/e-library.git
+
+cd e-library
+
+composer install
+
+cp .env.example .env
+php artisan key:generate
+
+php artisan migrate
+
+php artisan serve
+```
+
+---
+
+## 🔐 Authentication
+
+The system uses **Laravel Sanctum**.
+
+Include token in headers:
+
+```http
+Authorization: Bearer YOUR_TOKEN
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+php artisan test
+```
+
+---
+
+## 🧠 Design Principles
+
+* Separation of concerns
+* Dependency Injection via Interfaces
+* Scalable and maintainable structure
+* Clean and reusable code
+* Consistent API responses using Resources
+
+---
+
+## 🤝 Contributing
+
+```bash
+Fork → Create Branch → Commit → Pull Request
+```
+
+---
